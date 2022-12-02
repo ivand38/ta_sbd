@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Hash;
 
 class NelayanController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(Request $request)
     {
         $katakunci = $request->katakunci;
@@ -18,23 +23,25 @@ class NelayanController extends Controller
             $datas = DB::table('nelayan')
                 ->where('nama', 'like', "%$katakunci%")
                 ->orWhere('asal', 'like', "%$katakunci%")
-                ->paginate(3);
+                ->paginate(5);
         } else {
             $datas = DB::select('select * from nelayan');
         }
         if (strlen($katakunci)) {
-            $ikans = Ikan::where('nama_ikan', 'like', "%$katakunci%")
+            $ikans = DB::table('ikan')
+                ->where('nama_ikan', 'like', "%$katakunci%")
                 ->orWhere('berat_ikan', 'like', "%$katakunci%")
                 ->paginate(3);
         } else {
-            $ikans = Ikan::all();
+            $ikans = DB::select('select * from ikan');
         }
         if (strlen($katakunci)) {
-            $kapals = Kapal::where('nama_kapal', 'like', "%$katakunci%")
+            $kapals = DB::table('kapal')
+                ->where('nama_kapal', 'like', "%$katakunci%")
                 ->orWhere('tahun_kapal', 'like', "%$katakunci%")
                 ->paginate(3);
         } else {
-            $kapals = Kapal::all();
+            $kapals = DB::select('select * from kapal');
         }
         $joins = DB::table('ikan')
             ->join('nelayan', 'nelayan.id_nelayan', '=', 'ikan.id_nelayan')

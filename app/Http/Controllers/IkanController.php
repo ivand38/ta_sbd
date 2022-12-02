@@ -94,9 +94,9 @@ class IkanController extends Controller
         return redirect()->route('nelayan.index')->with('success', 'Data ikan berhasil diubah');
     }
 
-    public function delete($id) {
+    public function delete($id_ikan) {
         // Menggunakan Query Builder Laravel dan Named Bindings untuk valuesnya
-        DB::delete('DELETE FROM ikan WHERE id_ikan = :id_ikan', ['id_ikan' => $id]);
+        DB::delete('DELETE FROM ikan WHERE id_ikan = :id_ikan', ['id_ikan' => $id_ikan]);
 
         // Menggunakan laravel eloquent
         // Ikan::where('id_ikan', $id)->delete();

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NelayanController;
 use App\Http\Controllers\IkanController;
 use App\Http\Controllers\KapalController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +17,9 @@ use App\Http\Controllers\KapalController;
 |
 */
 
-Route::get('/', [NelayanController::class, 'index'])->name('nelayan.index');
+Route::group(['middleware' => 'auth'], function(){
+    Route::get('/', [NelayanController::class, 'index'])->name('nelayan.index');
+});
 Route::get('add', [NelayanController::class, 'create'])->name('nelayan.create');
 Route::post('store', [NelayanController::class, 'store'])->name('nelayan.store');
 Route::get('edit/{id}', [NelayanController::class, 'edit'])->name('nelayan.edit');
@@ -34,3 +37,7 @@ Route::post('kapal/store', [KapalController::class, 'store'])->name('kapal.store
 Route::get('kapal/edit/{id}', [KapalController::class, 'edit'])->name('kapal.edit');
 Route::post('kapal/update/{id}', [KapalController::class, 'update'])->name('kapal.update');
 Route::post('kapal/delete/{id}', [KapalController::class, 'delete'])->name('kapal.delete');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
