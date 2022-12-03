@@ -51,7 +51,9 @@ class NelayanController extends Controller
             ->get();
         $joins2 = DB::table('kapal')
             ->join('nelayan', 'nelayan.id_nelayan', '=', 'kapal.id_nelayan')
-            ->select('kapal.*', 'nelayan.nama','nelayan.asal')
+            ->select('kapal.*', 'nelayan.*')
+            ->where('kapal.is_deleted', '0')
+            ->where('nelayan.is_deleted', '0')
             ->get();
         return view('nelayan.index')
             ->with('datas', $datas)
