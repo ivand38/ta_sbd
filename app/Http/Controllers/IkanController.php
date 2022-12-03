@@ -94,13 +94,32 @@ class IkanController extends Controller
         return redirect()->route('nelayan.index')->with('success', 'Data ikan berhasil diubah');
     }
 
-    public function delete($id_ikan) {
+    public function delete($id) {
         // Menggunakan Query Builder Laravel dan Named Bindings untuk valuesnya
-        DB::delete('DELETE FROM ikan WHERE id_ikan = :id_ikan', ['id_ikan' => $id_ikan]);
+        DB::table('ikan')
+        ->where('id_ikan', $id)
+        ->delete();
 
         // Menggunakan laravel eloquent
         // Ikan::where('id_ikan', $id)->delete();
 
         return redirect()->route('nelayan.index')->with('success', 'Data ikan berhasil dihapus');
+    }
+
+    
+    public function softDelete($id)
+    {
+        // Menggunakan Query Builder Laravel dan Named Bindings untuk valuesnya
+        DB::update('UPDATE ikan SET is_deleted = 1
+        WHERE id_ikan = :id_ikan', ['id_ikan' => $id]);
+        return redirect()->route('nelayan.index')->with('success', 'Data Nelayan berhasil dihapus');
+    }
+
+    public function restore()
+    {
+        // Menggunakan Query Builder Laravel dan Named Bindings untuk valuesnya
+        DB::table('ikan')
+        ->update(['is_deleted' => 0]);
+        return redirect()->route('nelayan.index')->with('success', 'Data Nelayan berhasil direstore');
     }
 }

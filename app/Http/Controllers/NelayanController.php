@@ -25,7 +25,7 @@ class NelayanController extends Controller
                 ->orWhere('asal', 'like', "%$katakunci%")
                 ->paginate(5);
         } else {
-            $datas = DB::select('select * from nelayan');
+            $datas = DB::select('select * from nelayan where is_deleted=0');
         }
         if (strlen($katakunci)) {
             $ikans = DB::table('ikan')
@@ -33,7 +33,7 @@ class NelayanController extends Controller
                 ->orWhere('berat_ikan', 'like', "%$katakunci%")
                 ->paginate(3);
         } else {
-            $ikans = DB::select('select * from ikan');
+            $ikans = DB::select('select * from ikan where is_deleted=0');
         }
         if (strlen($katakunci)) {
             $kapals = DB::table('kapal')
@@ -41,11 +41,13 @@ class NelayanController extends Controller
                 ->orWhere('tahun_kapal', 'like', "%$katakunci%")
                 ->paginate(3);
         } else {
-            $kapals = DB::select('select * from kapal');
+            $kapals = DB::select('select * from kapal where is_deleted=0');
         }
         $joins = DB::table('ikan')
             ->join('nelayan', 'nelayan.id_nelayan', '=', 'ikan.id_nelayan')
-            ->select('ikan.*', 'nelayan.nama','nelayan.asal')
+            ->select('ikan.*', 'nelayan.*')
+            ->where('ikan.is_deleted', '0')
+            ->where('nelayan.is_deleted', '0')
             ->get();
         $joins2 = DB::table('kapal')
             ->join('nelayan', 'nelayan.id_nelayan', '=', 'kapal.id_nelayan')
@@ -141,7 +143,9 @@ class NelayanController extends Controller
     public function delete($id)
     {
         // Menggunakan Query Builder Laravel dan Named Bindings untuk valuesnya
-        DB::delete('DELETE FROM nelayan WHERE id_nelayan = :id_nelayan', ['id_nelayan' => $id]);
+        DB::table('nelayan')
+        ->where('id_nelayan', $id)
+        ->delete();
 
         // Menggunakan laravel eloquent
         // Nelayan::where('id_nelayan', $id)->delete();
@@ -149,5 +153,19 @@ class NelayanController extends Controller
         return redirect()->route('nelayan.index')->with('success', 'Data nelayan berhasil dihapus');
     }
 
-    
+    public function softDelete($id)
+    {
+        // Menggunakan Query Builder Laravel dan Named Bindings untuk valuesnya
+        DB::update('UPDATE nelayan SET is_deleted = 1
+        WHERE id_nelayan = :id_nelayan', ['id_nelayan' => $id]);
+        return redirect()->route('nelayan.index')->with('success', 'Data Nelayan berhasil dihapus');
+    }
+
+    public function restore()
+    {
+        // Menggunakan Query Builder Laravel dan Named Bindings untuk valuesnya
+        DB::table('nelayan')
+        ->update(['is_deleted' => 0]);
+        return redirect()->route('nelayan.index')->with('success', 'Data Nelayan berhasil direstore');
+    }
 }

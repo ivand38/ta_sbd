@@ -96,11 +96,28 @@ class KapalController extends Controller
 
     public function delete($id) {
         // Menggunakan Query Builder Laravel dan Named Bindings untuk valuesnya
-        DB::delete('DELETE FROM kapal WHERE id_kapal = :id_kapal', ['id_kapal' => $id]);
+        DB::table('kapal')
+        ->where('id_kapal', $id)
+        ->delete();
 
         // Menggunakan laravel eloquent
         // Ikan::where('id_ikan', $id)->delete();
 
         return redirect()->route('nelayan.index')->with('success', 'Data kapal berhasil dihapus');
+    }
+    public function softDelete($id)
+    {
+        // Menggunakan Query Builder Laravel dan Named Bindings untuk valuesnya
+        DB::update('UPDATE kapal SET is_deleted = 1
+        WHERE id_kapal = :id_kapal', ['id_kapal' => $id]);
+        return redirect()->route('nelayan.index')->with('success', 'Data Nelayan berhasil dihapus');
+    }
+
+    public function restore()
+    {
+        // Menggunakan Query Builder Laravel dan Named Bindings untuk valuesnya
+        DB::table('kapal')
+        ->update(['is_deleted' => 0]);
+        return redirect()->route('nelayan.index')->with('success', 'Data Nelayan berhasil direstore');
     }
 }
