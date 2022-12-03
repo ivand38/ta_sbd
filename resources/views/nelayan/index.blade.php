@@ -12,6 +12,7 @@
 
 <h4 class="mt-5">Data Nelayan</h4>
 
+
 <a href="{{ route('nelayan.create') }}" type="button" class="btn btn-success rounded-3">Tambah Data</a>
 
 @if($message = Session::get('success'))

@@ -148,4 +148,6 @@ class NelayanController extends Controller
 
         return redirect()->route('nelayan.index')->with('success', 'Data nelayan berhasil dihapus');
     }
+
+    
 }

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NelayanController;
 use App\Http\Controllers\IkanController;
 use App\Http\Controllers\KapalController;
+use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Auth::routes();
 Route::group(['middleware' => 'auth'], function(){
     Route::get('/', [NelayanController::class, 'index'])->name('nelayan.index');
 });
@@ -38,6 +39,6 @@ Route::get('kapal/edit/{id}', [KapalController::class, 'edit'])->name('kapal.edi
 Route::post('kapal/update/{id}', [KapalController::class, 'update'])->name('kapal.update');
 Route::post('kapal/delete/{id}', [KapalController::class, 'delete'])->name('kapal.delete');
 
-Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
